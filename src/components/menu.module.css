@@ -1,0 +1,64 @@
+/* menu.module.css */
+
+/* Style de la navigation principale */
+.menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #111111; /* Noir profond pour un look élégant */
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Liste des items du menu */
+.menu ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Style des liens du menu */
+.menu ul li {
+    position: relative;
+}
+
+.menu ul li a {
+    text-decoration: none;
+    color: #FFFFFF; /* Blanc pur pour contraster avec le fond noir */
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 0.5rem;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+/* Effet hover sur les liens */
+.menu ul li a:hover {
+    color: #E50914; /* Rouge vif pour un effet dynamique */
+    border-bottom: 2px solid #E50914;
+}
+
+/* Style pour le lien actif */
+.menu ul li a.active {
+    color: #E50914;
+    border-bottom: 2px solid #E50914;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .menu {
+        padding: 0.5rem 1rem;
+    }
+
+    .menu ul {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
