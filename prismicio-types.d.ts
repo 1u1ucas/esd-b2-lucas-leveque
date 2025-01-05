@@ -4,8 +4,6 @@ import type * as prismic from "@prismicio/client";
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
-type ArticlesDocumentDataSlicesSlice = never;
-
 /**
  * Content for Articles documents
  */
@@ -13,66 +11,57 @@ interface ArticlesDocumentData {
   /**
    * Title field in *Articles*
    *
-   * - **Field Type**: Text
+   * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
    * - **API ID Path**: articles.title
    * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#key-text
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
-  title: prismic.KeyTextField;
+  title: prismic.RichTextField;
 
   /**
-   * Description field in *Articles*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: articles.description
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  description: prismic.KeyTextField;
-
-  /**
-   * Slice Zone field in *Articles*
-   *
-   * - **Field Type**: Slice Zone
-   * - **Placeholder**: *None*
-   * - **API ID Path**: articles.slices[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#slices
-   */
-  slices: prismic.SliceZone<ArticlesDocumentDataSlicesSlice> /**
-   * Meta Title field in *Articles*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: A title of the page used for social media and search engines
-   * - **API ID Path**: articles.meta_title
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */;
-  meta_title: prismic.KeyTextField;
-
-  /**
-   * Meta Description field in *Articles*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: A brief summary of the page
-   * - **API ID Path**: articles.meta_description
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  meta_description: prismic.KeyTextField;
-
-  /**
-   * Meta Image field in *Articles*
+   * Image field in *Articles*
    *
    * - **Field Type**: Image
    * - **Placeholder**: *None*
-   * - **API ID Path**: articles.meta_image
-   * - **Tab**: SEO & Metadata
+   * - **API ID Path**: articles.image
+   * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/field#image
    */
-  meta_image: prismic.ImageField<never>;
+  image: prismic.ImageField<never>;
+
+  /**
+   * Content field in *Articles*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: articles.content
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  content: prismic.RichTextField;
+
+  /**
+   * Author field in *Articles*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: articles.author
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  author: prismic.KeyTextField;
+
+  /**
+   * Release date field in *Articles*
+   *
+   * - **Field Type**: Date
+   * - **Placeholder**: *None*
+   * - **API ID Path**: articles.release_date
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#date
+   */
+  release_date: prismic.DateField;
 }
 
 /**
@@ -134,7 +123,11 @@ interface MenuDocumentData {
 export type MenuDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<Simplify<MenuDocumentData>, "menu", Lang>;
 
-type PageDocumentDataSlicesSlice = TextImageSlice | RichTextSlice;
+type PageDocumentDataSlicesSlice =
+  | ArticlePartSlice
+  | ArticleSlice
+  | TextImageSlice
+  | RichTextSlice;
 
 type PageDocumentDataSlices1Slice = TextImageSlice;
 
@@ -231,6 +224,153 @@ export type PageDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<PageDocumentData>, "page", Lang>;
 
 export type AllDocumentTypes = ArticlesDocument | MenuDocument | PageDocument;
+
+/**
+ * Primary content in *Article → Default → Primary*
+ */
+export interface ArticleSliceDefaultPrimary {
+  /**
+   * Title field in *Article → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: article.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * Image field in *Article → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: article.default.primary.image
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  image: prismic.ImageField<never>;
+
+  /**
+   * content field in *Article → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: article.default.primary.content
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  content: prismic.RichTextField;
+
+  /**
+   * Author field in *Article → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: article.default.primary.author
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  author: prismic.KeyTextField;
+
+  /**
+   * release date field in *Article → Default → Primary*
+   *
+   * - **Field Type**: Date
+   * - **Placeholder**: *None*
+   * - **API ID Path**: article.default.primary.release_date
+   * - **Documentation**: https://prismic.io/docs/field#date
+   */
+  release_date: prismic.DateField;
+}
+
+/**
+ * Default variation for Article Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ArticleSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<ArticleSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Article*
+ */
+type ArticleSliceVariation = ArticleSliceDefault;
+
+/**
+ * Article Shared Slice
+ *
+ * - **API ID**: `article`
+ * - **Description**: Article
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ArticleSlice = prismic.SharedSlice<
+  "article",
+  ArticleSliceVariation
+>;
+
+/**
+ * Item in *ArticlePart → Default → Primary → Articles*
+ */
+export interface ArticlePartSliceDefaultPrimaryArticlesItem {
+  /**
+   * article field in *ArticlePart → Default → Primary → Articles*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: article_part.default.primary.articles[].article
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  article: prismic.ContentRelationshipField<"articles">;
+}
+
+/**
+ * Primary content in *ArticlePart → Default → Primary*
+ */
+export interface ArticlePartSliceDefaultPrimary {
+  /**
+   * Articles field in *ArticlePart → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: article_part.default.primary.articles[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  articles: prismic.GroupField<
+    Simplify<ArticlePartSliceDefaultPrimaryArticlesItem>
+  >;
+}
+
+/**
+ * Default variation for ArticlePart Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ArticlePartSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<ArticlePartSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *ArticlePart*
+ */
+type ArticlePartSliceVariation = ArticlePartSliceDefault;
+
+/**
+ * ArticlePart Shared Slice
+ *
+ * - **API ID**: `article_part`
+ * - **Description**: ArticlePart
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ArticlePartSlice = prismic.SharedSlice<
+  "article_part",
+  ArticlePartSliceVariation
+>;
 
 /**
  * Primary content in *RichText → Default → Primary*
@@ -403,7 +543,6 @@ declare module "@prismicio/client" {
     export type {
       ArticlesDocument,
       ArticlesDocumentData,
-      ArticlesDocumentDataSlicesSlice,
       MenuDocument,
       MenuDocumentData,
       MenuDocumentDataMenuitemItem,
@@ -412,6 +551,15 @@ declare module "@prismicio/client" {
       PageDocumentDataSlicesSlice,
       PageDocumentDataSlices1Slice,
       AllDocumentTypes,
+      ArticleSlice,
+      ArticleSliceDefaultPrimary,
+      ArticleSliceVariation,
+      ArticleSliceDefault,
+      ArticlePartSlice,
+      ArticlePartSliceDefaultPrimaryArticlesItem,
+      ArticlePartSliceDefaultPrimary,
+      ArticlePartSliceVariation,
+      ArticlePartSliceDefault,
       RichTextSlice,
       RichTextSliceDefaultPrimary,
       RichTextSliceVariation,
