@@ -46,9 +46,9 @@ const ArticlePart = (): JSX.Element => {
               <div className={styles.cardDescription}>
                 <PrismicRichText field={article.data.content} />
               </div>
-              <a href={`/articles/${article.uid}`} className={styles.cardButton}>
+              <p className={styles.cardButton}>
                 Lire l'article
-              </a>
+              </p>
             </div>
           </div>
         ))}

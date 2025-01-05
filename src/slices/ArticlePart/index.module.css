@@ -57,6 +57,11 @@
     font-size: 1rem;
     color: #dddddd;
     flex-grow: 1;
+    overflow: hidden;
+    display: -webkit-box; /* Utilise un layout flexible pour couper le texte */
+    -webkit-line-clamp: 4; /* Limite à 4 lignes (approximativement 300 caractères) */
+    -webkit-box-orient: vertical; /* Nécessaire pour -webkit-line-clamp */
+    text-overflow: ellipsis; /* Ajoute des points de suspension si le texte dépasse */
   }
   
   /* Bouton pour lire l'article */
