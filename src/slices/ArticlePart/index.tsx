@@ -11,8 +11,9 @@ import { ArticlesDocument } from "../../../prismicio-types";
 /**
  * Props for `ArticlePart`.
  */
+export type ArticlePartProps = SliceComponentProps<Content.ArticlePartSlice>;
 
-const ArticlePart = (): JSX.Element => {
+const ArticlePart = ({ slice }: ArticlePartProps): JSX.Element => {
   const [articles, setArticles] = useState<ArticlesDocument[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<ArticlesDocument | null>(null);
 
@@ -20,11 +21,24 @@ const ArticlePart = (): JSX.Element => {
   useEffect(() => {
     const fetchArticles = async () => {
       const client = createClient();
-      const response = await client.getByType("articles");
+      
+      // Vérifier la variation du slice
+      let response;
+      if (slice.variation === "top3") {
+        // Récupérer seulement les trois derniers articles
+        response = await client.getByType("articles", {
+          pageSize: 3,
+          orderings: [{ field: "my.articles.release_date", direction: "desc" }],
+        });
+      } else {
+        // Récupérer tous les articles
+        response = await client.getByType("articles");
+      }
+
       setArticles(response.results);
     };
     fetchArticles();
-  }, []);
+  }, [slice]);
 
   // Close the detailed view
   const closeDetailView = () => setSelectedArticle(null);

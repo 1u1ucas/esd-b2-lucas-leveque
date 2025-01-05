@@ -124,6 +124,7 @@ export type MenuDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<Simplify<MenuDocumentData>, "menu", Lang>;
 
 type PageDocumentDataSlicesSlice =
+  | FormulaireSlice
   | ArticlePartSlice
   | ArticleSlice
   | TextImageSlice
@@ -326,6 +327,21 @@ export interface ArticlePartSliceDefaultPrimaryArticlesItem {
 }
 
 /**
+ * Item in *ArticlePart → only_3 → Primary → Articles*
+ */
+export interface ArticlePartSliceTop3PrimaryArticlesItem {
+  /**
+   * article field in *ArticlePart → only_3 → Primary → Articles*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: article_part.top3.primary.articles[].article
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  article: prismic.ContentRelationshipField<"articles">;
+}
+
+/**
  * Primary content in *ArticlePart → Default → Primary*
  */
 export interface ArticlePartSliceDefaultPrimary {
@@ -356,9 +372,39 @@ export type ArticlePartSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
+ * Primary content in *ArticlePart → only_3 → Primary*
+ */
+export interface ArticlePartSliceTop3Primary {
+  /**
+   * Articles field in *ArticlePart → only_3 → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: article_part.top3.primary.articles[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  articles: prismic.GroupField<
+    Simplify<ArticlePartSliceTop3PrimaryArticlesItem>
+  >;
+}
+
+/**
+ * only_3 variation for ArticlePart Slice
+ *
+ * - **API ID**: `top3`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ArticlePartSliceTop3 = prismic.SharedSliceVariation<
+  "top3",
+  Simplify<ArticlePartSliceTop3Primary>,
+  never
+>;
+
+/**
  * Slice variation for *ArticlePart*
  */
-type ArticlePartSliceVariation = ArticlePartSliceDefault;
+type ArticlePartSliceVariation = ArticlePartSliceDefault | ArticlePartSliceTop3;
 
 /**
  * ArticlePart Shared Slice
@@ -370,6 +416,36 @@ type ArticlePartSliceVariation = ArticlePartSliceDefault;
 export type ArticlePartSlice = prismic.SharedSlice<
   "article_part",
   ArticlePartSliceVariation
+>;
+
+/**
+ * Default variation for Formulaire Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type FormulaireSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Record<string, never>,
+  never
+>;
+
+/**
+ * Slice variation for *Formulaire*
+ */
+type FormulaireSliceVariation = FormulaireSliceDefault;
+
+/**
+ * Formulaire Shared Slice
+ *
+ * - **API ID**: `formulaire`
+ * - **Description**: Formulaire
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type FormulaireSlice = prismic.SharedSlice<
+  "formulaire",
+  FormulaireSliceVariation
 >;
 
 /**
@@ -558,8 +634,14 @@ declare module "@prismicio/client" {
       ArticlePartSlice,
       ArticlePartSliceDefaultPrimaryArticlesItem,
       ArticlePartSliceDefaultPrimary,
+      ArticlePartSliceTop3PrimaryArticlesItem,
+      ArticlePartSliceTop3Primary,
       ArticlePartSliceVariation,
       ArticlePartSliceDefault,
+      ArticlePartSliceTop3,
+      FormulaireSlice,
+      FormulaireSliceVariation,
+      FormulaireSliceDefault,
       RichTextSlice,
       RichTextSliceDefaultPrimary,
       RichTextSliceVariation,
