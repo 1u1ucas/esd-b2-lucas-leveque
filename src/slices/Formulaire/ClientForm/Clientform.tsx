@@ -22,7 +22,6 @@ const ClientForm = (
     setStatusMessage(null); // Réinitialiser le message à chaque soumission
 
     try {
-      console.log("form submitted");
       await createClient(formData, setClients); // Envoi de la demande
       setStatusMessage("Client ajouté avec succès !");
     } catch (error) {
@@ -34,7 +33,6 @@ const ClientForm = (
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.name, event.target.value);
     setFormData((previousFormData) => {
       return {
         ...previousFormData,

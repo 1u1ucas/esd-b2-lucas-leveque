@@ -9,8 +9,6 @@ const connectAirtable = () => {
 
   const airtableBase = Airtable.base('appMLXyHPtnLniJnP');
 
-  console.log("Connected to Airtable");
-
   return airtableBase;
 };
 

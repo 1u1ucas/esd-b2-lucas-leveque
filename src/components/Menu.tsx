@@ -8,8 +8,6 @@ const Menu = async () => {
     const client = createClient();
     const menu = await client.getSingle('menu');
 
-    console.log(menu);
-
     return (
         <nav className={styles.menu}>
             <ul>

@@ -19,7 +19,6 @@ const getClients = (
     .eachPage(
         (records, fetchNextPage) => {
             for (const record of records) {
-                console.log(record);
                 
                 setClients((previousClients) => {
                     return [
