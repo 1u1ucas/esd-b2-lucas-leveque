@@ -2,98 +2,58 @@
 
 import { Content } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
-import { createClient } from "@/prismicio";
 import { PrismicRichText } from "@prismicio/react";
-import { useState, useEffect } from "react";
+import Link from "next/link";
 import styles from "./index.module.css";
-import { ArticlesDocument } from "../../../prismicio-types";
 
 /**
  * Props for `ArticlePart`.
  */
 export type ArticlePartProps = SliceComponentProps<Content.ArticlePartSlice>;
 
+/**
+ * ArticlePart component.
+ */
 const ArticlePart = ({ slice }: ArticlePartProps): JSX.Element => {
-  const [articles, setArticles] = useState<ArticlesDocument[]>([]);
-  const [selectedArticle, setSelectedArticle] = useState<ArticlesDocument | null>(null);
+  const { title, content, image } = slice.primary;
 
-  // Fetch articles on component mount
-  useEffect(() => {
-    const fetchArticles = async () => {
-      const client = createClient();
-      
-      // Vérifier la variation du slice
-      let response;
-      if (slice.variation === "top3") {
-        // Récupérer seulement les trois derniers articles
-        response = await client.getByType("articles", {
-          pageSize: 3,
-          orderings: [{ field: "my.articles.release_date", direction: "desc" }],
-        });
-      } else {
-        // Récupérer tous les articles
-        response = await client.getByType("articles");
-      }
-
-      setArticles(response.results);
-    };
-    fetchArticles();
-  }, [slice]);
-
-  // Close the detailed view
-  const closeDetailView = () => setSelectedArticle(null);
+  // Limit content to 300 characters
+  const limitedContent = content && content.length > 0
+    ? [{ ...content[0], text: content[0].text.slice(0, 300) }]
+    : null;
 
   return (
-    <section className={styles.articlesSection}>
-      <div className={styles.cardsContainer}>
-        {articles.map((article, index) => (
-          <div
-            key={index}
-            className={styles.card}
-            onClick={() => setSelectedArticle(article)}
-          >
-            <div className={styles.cardContent}>
-              <div className={styles.cardTitle}>
-                <PrismicRichText field={article.data.title} />
-              </div>
-              <p className={styles.cardDate}>{article.data.release_date}</p>
-              <div className={styles.cardDescription}>
-                <PrismicRichText field={article.data.content} />
-              </div>
-              <p className={styles.cardButton}>
-                Lire l'article
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {selectedArticle && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <button onClick={closeDetailView} className={styles.closeButton}>
-              &times;
-            </button>
-            <h2 className={styles.modalTitle}>
-              <PrismicRichText field={selectedArticle.data.title} />
-            </h2>
-            <p className={styles.modalDate}>{selectedArticle.data.release_date}</p>
-            <div className={styles.modalAuthor}>
-              <strong>Auteur :</strong> {selectedArticle.data.author}
-            </div>
-            <div className={styles.modalImage}>
-              <img
-                src={selectedArticle.data.image?.url ?? ""}
-                alt={selectedArticle.data.image?.alt ?? ""}
-              />
-            </div>
-            <div className={styles.modalContentText}>
-              <PrismicRichText field={selectedArticle.data.content} />
-            </div>
-          </div>
-        </div>
+    <div className={styles.articleCard}>
+      {/* Titre de l'article */}
+      {title ? (
+        <PrismicRichText field={title} />
+      ) : (
+        <h2 className={styles.placeholder}>Titre indisponible</h2>
       )}
-    </section>
+
+      {/* Image de l'article */}
+      {image?.url && (
+        <img
+          src={image.url}
+          alt={image.alt || "Image de l'article"}
+          className={styles.articleImage}
+        />
+      )}
+
+      {/* Description de l'article */}
+      {limitedContent ? (
+        <div>
+          <PrismicRichText field={limitedContent} />
+        </div>
+      ) : (
+        <p className={styles.placeholder}>Description indisponible</p>
+      )}
+
+      {/* Button to navigate to the article page */}
+      <Link href={`/articles/${slice.id}`}>
+        <div className={styles.readMoreButton}>Lire l'article</div>
+      </Link>
+    </div>
   );
 };
 

@@ -494,6 +494,68 @@ export type RichTextSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *SingleArticle → Default → Primary → Articles*
+ */
+export interface SingleArticleSliceDefaultPrimaryArticlesItem {
+  /**
+   * article field in *SingleArticle → Default → Primary → Articles*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: single_article.default.primary.articles[].article
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  article: prismic.ContentRelationshipField<"articles">;
+}
+
+/**
+ * Primary content in *SingleArticle → Default → Primary*
+ */
+export interface SingleArticleSliceDefaultPrimary {
+  /**
+   * Articles field in *SingleArticle → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: single_article.default.primary.articles[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  articles: prismic.GroupField<
+    Simplify<SingleArticleSliceDefaultPrimaryArticlesItem>
+  >;
+}
+
+/**
+ * Default variation for SingleArticle Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SingleArticleSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<SingleArticleSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *SingleArticle*
+ */
+type SingleArticleSliceVariation = SingleArticleSliceDefault;
+
+/**
+ * SingleArticle Shared Slice
+ *
+ * - **API ID**: `single_article`
+ * - **Description**: SingleArticle
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SingleArticleSlice = prismic.SharedSlice<
+  "single_article",
+  SingleArticleSliceVariation
+>;
+
+/**
  * Primary content in *TextImage → Default → Primary*
  */
 export interface TextImageSliceDefaultPrimary {
@@ -646,6 +708,11 @@ declare module "@prismicio/client" {
       RichTextSliceDefaultPrimary,
       RichTextSliceVariation,
       RichTextSliceDefault,
+      SingleArticleSlice,
+      SingleArticleSliceDefaultPrimaryArticlesItem,
+      SingleArticleSliceDefaultPrimary,
+      SingleArticleSliceVariation,
+      SingleArticleSliceDefault,
       TextImageSlice,
       TextImageSliceDefaultPrimary,
       TextImageSliceImageTextPrimary,
